@@ -1,31 +1,29 @@
-import os
 import discord
 from discord.ext import commands
+import os
 
-# Botのプレフィックス（コマンドの前に付ける文字）を指定
-bot = commands.Bot(command_prefix="!")
+# 環境変数からボットのトークンを取得
+TOKEN = os.getenv("DISCORD_TOKEN")
 
-# Botが起動したときに表示されるメッセージ
+# Botの接頭辞とインテントを設定
+intents = discord.Intents.default()
+intents.message_content = True
+bot = commands.Bot(command_prefix="!", intents=intents)
+
+# ボット起動時のイベント
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
 
-# 簡単なコマンド "!hello" を定義
-@bot.command()
+# Pingコマンドの例
+@bot.command(name="ping")
+async def ping(ctx):
+    await ctx.send("Pong!")
+
+# その他のコマンドを追加
+@bot.command(name="hello")
 async def hello(ctx):
-    await ctx.send("こんにちは！私はDiscordボットです！")
+    await ctx.send("こんにちは！")
 
-# メッセージを自動で反応させる
-@bot.event
-async def on_message(message):
-    if message.author == bot.user:
-        return
-    
-    if "こんにちは" in message.content:
-        await message.channel.send("こんにちは！元気ですか？")
-
-    # 他のコマンドが動作するための処理
-    await bot.process_commands(message)
-
-# Botを実行（トークンを環境変数から取得）
-bot.run(os.getenv("DISCORD_TOKEN"))
+# Botを実行
+bot.run(TOKEN)

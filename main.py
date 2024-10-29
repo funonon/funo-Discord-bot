@@ -8,7 +8,6 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 # Botの接頭辞とインテントを設定
 intents = discord.Intents.default()
 intents.message_content = True
-intents.messages = True  # メッセージのインテントを有効にする
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # ボット起動時のイベント
@@ -21,19 +20,14 @@ async def on_ready():
 async def ping(ctx):
     await ctx.send("Pong!")
 
-# 受信したメッセージがボット自身のものでない場合のみ処理する
+# メッセージ受信時の処理
 @bot.event
 async def on_message(message):
     # ボット自身のメッセージには反応しない
     if message.author == bot.user:
         return
-
+    # 他のコマンドを処理
     await bot.process_commands(message)
-
-# その他のコマンドを追加
-@bot.command(name="hello")
-async def hello(ctx):
-    await ctx.send("こんにちは！")
 
 # Botを実行
 bot.run(TOKEN)

@@ -27,3 +27,4 @@ async def hello(ctx):
 
 # Botを実行
 bot.run(TOKEN)
+

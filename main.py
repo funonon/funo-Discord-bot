@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 import os
+from flask import Flask
+
+app = Flask(__name__)
 
 # 環境変数からボットのトークンを取得
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -29,5 +32,12 @@ async def on_message(message):
     # 他のコマンドを処理
     await bot.process_commands(message)
 
+# Flaskサーバーを起動
+@app.route('/')
+def index():
+    return 'Bot is running!'
+
 # Botを実行
-bot.run(TOKEN)
+if __name__ == "__main__":
+    bot.loop.create_task(bot.start(TOKEN))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
